@@ -1,0 +1,118 @@
+{
+  "title": "vsnd-setup: F3/F4/F5 screenshots",
+  "rules": [
+    {
+      "description": "F5 opens Screenshot toolbar",
+      "manipulators": [
+        {
+          "from": {
+            "key_code": "f5",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "shell_command": "bash -lc 'open -a Screenshot || open -a /System/Applications/Utilities/Screenshot.app'"
+            }
+          ],
+          "type": "basic"
+        }
+      ]
+    },
+    {
+      "description": "F4 interactive selection -> send Cmd+Shift+Option+Control+4, Cmd+F4 -> interactive to clipboard",
+      "manipulators": [
+        {
+          "from": {
+            "key_code": "f4",
+            "modifiers": {
+              "mandatory": [
+                "left_command"
+              ],
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "shell_command": "bash -lc 'screencapture -i -c'"
+            }
+          ],
+          "type": "basic"
+        },
+        {
+          "from": {
+            "key_code": "f4",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "4",
+              "modifiers": [
+                "left_command",
+                "left_shift",
+                "left_option",
+                "left_control"
+              ]
+            }
+          ],
+          "type": "basic"
+        }
+      ]
+    },
+    {
+      "description": "F3 full screen -> send Cmd+Shift+Option+3, Cmd+F3 -> full screen to clipboard",
+      "manipulators": [
+        {
+          "from": {
+            "key_code": "f3",
+            "modifiers": {
+              "mandatory": [
+                "left_command"
+              ],
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "shell_command": "bash -lc 'screencapture -c'"
+            }
+          ],
+          "type": "basic"
+        },
+        {
+          "from": {
+            "key_code": "f3",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "3",
+              "modifiers": [
+                "left_command",
+                "left_shift",
+                "left_option",
+                "left_control"
+              ]
+            }
+          ],
+          "type": "basic"
+        }
+      ]
+    }
+  ]
+}

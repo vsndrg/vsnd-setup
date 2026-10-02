@@ -1,0 +1,6 @@
+[submodule "aerospace"]
+	path = aerospace
+	url = https://github.com/vsndrg/aerospace.git
+[submodule "vsndbar"]
+	path = vsndbar
+	url = https://github.com/vsndrg/vsndbar.git
