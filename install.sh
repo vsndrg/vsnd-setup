@@ -39,9 +39,12 @@ say()  { printf '    %s\n' "$*"; }
 warn() { printf '    %s! %s%s\n' "$YELLOW" "$*" "$RESET"; NOTES+=("$*"); }
 die()  { printf '\n%serror: %s%s\n' "$RED" "$*" "$RESET" >&2; exit 1; }
 
+has_tty() { { : </dev/tty; } 2>/dev/null; }
+
 YES=0
 ask() {  # ask "question" → 0 for yes (the default)
   [[ $YES == 1 ]] && return 0
+  has_tty || die "no terminal to ask \"$1\" — run with --yes"
   local answer
   read -r -p "    $1 [Y/n] " answer </dev/tty || return 1
   [[ -z "$answer" || "$answer" == [yY]* ]]
@@ -93,7 +96,7 @@ ensure_brew() {
     step "Homebrew"
     say "Homebrew is needed (Karabiner-Elements; the aerospace CLI goes into its bin)."
     ask "Install Homebrew now?" || die "install Homebrew (https://brew.sh) and run this again"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" </dev/tty
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
   BREW_PREFIX="$(brew --prefix)"
@@ -116,7 +119,11 @@ bootstrap() {
   else
     git clone -q "$REPO" "$SETUP_DIR"
   fi
-  exec /bin/bash "$SETUP_DIR/install.sh" "$@" </dev/tty
+  # the pipe is stdin: questions are read from the terminal, if there is one
+  if has_tty; then
+    exec /bin/bash "$SETUP_DIR/install.sh" "$@" </dev/tty
+  fi
+  exec /bin/bash "$SETUP_DIR/install.sh" "$@" </dev/null
 }
 
 # commit of a component pinned by this checkout (the submodule entry)
