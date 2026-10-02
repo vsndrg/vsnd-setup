@@ -1,5 +1,7 @@
 # vsnd-setup
 
+![VsndBar on a MacBook](docs/bar.png)
+
 One command to set up a tiling macOS desktop:
 
 - **[AeroSpace](https://github.com/nikitabobko/AeroSpace)** (i3-like tiling window manager), built from source with
