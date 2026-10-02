@@ -230,8 +230,20 @@ install_aerospace() {
   # brew's cask would bring a newer, unpatched AeroSpace back on `brew upgrade`
   if brew list --cask aerospace >/dev/null 2>&1; then
     say "removing the Homebrew cask (its upgrades would replace the patched app)"
+    # keep the app itself: build.sh compares its signer, a changed one resets
+    # the Accessibility grant
+    local kept=""
+    if [[ -d /Applications/AeroSpace.app ]]; then
+      kept="$(mktemp -d)"
+      mv /Applications/AeroSpace.app "$kept/"
+    fi
     brew uninstall --cask aerospace >/dev/null 2>&1 \
       || warn "couldn't uninstall the aerospace cask: don't let \`brew upgrade\` update it"
+    if [[ -n "$kept" ]]; then
+      rm -rf /Applications/AeroSpace.app
+      mv "$kept/AeroSpace.app" /Applications/
+      rmdir "$kept"
+    fi
   fi
   ln -sf "$release/bin/aerospace" "$BREW_PREFIX/bin/aerospace"
   mkdir -p "$BREW_PREFIX/share/zsh/site-functions"
