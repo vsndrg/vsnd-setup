@@ -52,7 +52,7 @@ AeroSpace (`~/.config/aerospace/aerospace.toml`):
 
 | Keys | Action |
 |---|---|
-| `cmd-1` … `cmd-0` | workspace 1–10, on the monitor where it lives; pressed again — back to the previous one |
+| `cmd-1` … `cmd-0` | workspace 1–10, on the monitor where it lives; pressed again — back to the previous one; held — only a peek: released, back to where you were |
 | `cmd-shift-1` … `0` | move the window to workspace N |
 | `cmd-alt-1` … `0` | bring workspace N to the focused monitor |
 | `cmd-j` / `cmd-k` | focus left / right |

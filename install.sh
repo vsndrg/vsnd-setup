@@ -25,6 +25,9 @@ STATE="$HOME/.local/state/vsnd-setup"
 CACHE="$HOME/.cache/vsnd-setup"
 SHARE="$HOME/.local/share/vsnd-setup"
 PRISTINE="$HOME/.cache/aerospace-original.app"  # patches/build.sh swaps its binary into this
+# aerospace.toml flags only the patched build knows: stock AeroSpace rejects the
+# whole config over one, so uninstall takes them out
+PATCHED_ONLY_FLAGS=(--peek-on-hold)
 PYTHON=/usr/bin/python3
 
 # --- output ------------------------------------------------------------------
@@ -362,7 +365,7 @@ do_uninstall() {
       • put back stock AeroSpace $AEROSPACE_VERSION (unpatched)
       • remove its keys from Karabiner's config
       • put back the menu bar and screenshot settings it changed
-    Your configs in ~/.config stay.
+    Your configs in ~/.config stay (aerospace.toml loses the flags only the patched build knows).
 
 EOF
   ask "Continue?" || exit 0
@@ -385,6 +388,15 @@ EOF
     rm -rf /Applications/AeroSpace.app
     ditto "$PRISTINE" /Applications/AeroSpace.app
     tccutil reset Accessibility bobko.aerospace >/dev/null 2>&1 || true
+    local toml="$HOME/.config/aerospace/aerospace.toml" flag stripped=()
+    for flag in "${PATCHED_ONLY_FLAGS[@]}"; do
+      if [[ -f "$toml" ]] && grep -q -- " $flag" "$toml"; then stripped+=("$flag"); fi
+    done
+    if (( ${#stripped[@]} )); then
+      cp "$toml" "$toml.backup-$(date +%Y%m%d-%H%M%S)"
+      for flag in "${stripped[@]}"; do sed -i '' "s/ $flag//g" "$toml"; done
+      say "aerospace.toml: took out ${stripped[*]} (patched build only; the previous one is next to it)"
+    fi
     open /Applications/AeroSpace.app
     rm -f "$STATE/aerospace.stamp"
     say "stock AeroSpace $AEROSPACE_VERSION is back (grant Accessibility again when asked)"
